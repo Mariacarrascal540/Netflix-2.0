@@ -122,6 +122,7 @@
             font-size: 11px;
             color: #555;
             margin-top: 5px;
+
         }
     </style>
 
@@ -424,9 +425,15 @@
                 let my_movies = JSON.parse(localStorage.my_movies);
                 let i = 0;
                 while (i < my_movies.length) {
-                    if (my_movies[i].title === movie.title) {
-                        throw `"${movie.title}" is already in your list.`;
+                    let same = false;
+                    if (my_movies[i].id) {
+                        // Película que vino de TMDb: comparamos el id
+                        same = my_movies[i].id === movie.id;
+                    } else {
+                        // Película creada a mano (no tiene id): comparamos el título
+                        same = my_movies[i].title === movie.title;
                     }
+                    if (same) throw `"${movie.title}" is already in your list.`;
                     i = i + 1;
                 }
 
@@ -457,7 +464,7 @@
                     thumbnail = `https://image.tmdb.org/t/p/w200${movie.poster_path}`;
                 }
 
-                my_movies.push({ title: movie.title, director: director, thumbnail: thumbnail });
+                my_movies.push({ id: movie.id, title: movie.title, director: director, thumbnail: thumbnail });
                 localStorage.my_movies = JSON.stringify(my_movies);
 
                 // 5. CONFIRMAR al usuario
