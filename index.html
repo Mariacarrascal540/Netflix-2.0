@@ -110,6 +110,19 @@
             text-transform: uppercase;
             font-size: 12px;
         }
+
+        div.movie {
+            vertical-align: top;
+        }
+
+        div.movie div.overview {
+            width: 200px;
+            height: 80px;
+            overflow: hidden;
+            font-size: 11px;
+            color: #555;
+            margin-top: 5px;
+        }
     </style>
 
     <script src="config.js"></script>
@@ -254,6 +267,7 @@
                     </div>
                     <div class="title">${movie.title}</div>
                     <div class="field">${movie.release_date || 'No date'}</div>
+                    <div class="overview">${movie.overview || 'No synopsis available.'}</div>
                     <div class="actions">
                         <button class="add-from-api" data-my-id="${i}">add</button>
                     </div>
@@ -385,10 +399,14 @@
                     message.innerHTML = `${lastResults.length} movies found.`;
                     document.getElementById('results').innerHTML = resultsView(lastResults);                }
 
-            } catch (e) {
-                // 5. GESTIONAR errores (los nuestros y los de red)
-                message.innerHTML = `Error: ${e}`;
-            }
+                } catch (e) {
+                    // 5. GESTIONAR errores (los nuestros y los de red)
+                    if (e instanceof TypeError) {
+                        message.innerHTML = 'Error: could not connect to TMDb. Check your internet connection.';
+                    } else {
+                        message.innerHTML = `Error: ${e}`;
+                    }
+                }
         };
 
         const addFromAPIContr = async (movie, button) => {
